@@ -1,0 +1,28 @@
+services:
+  postgre:
+    image: postgres:13.13
+    ports: 
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USE: admin
+      POSTGRES_DB: kubenews
+
+  kubenews:
+    image: hparcelly/kubenews:v1
+    depends_on:
+      - postgre
+    build:
+      context: ./src
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      DB_DATABASE: kubenews
+      DB_USERNAME: admin
+      DB_PASSWORD: 1234
+      DB_HOST: postgre
+
+networks:
+  kubenews_net:
+    driver: bridge
